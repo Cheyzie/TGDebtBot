@@ -3,6 +3,7 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 import re
 import os
+from database import engine
 
 from crud import *
 
@@ -144,4 +145,7 @@ async def wipe_away_a_dept(msg: types.Message):
 
 
 if __name__ == '__main__':
+   if not os.path.exists('database.sqlite3'):
+       print("Creating db...")
+       tables.Base.metadata.create_all(engine)
    executor.start_polling(dp)

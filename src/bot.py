@@ -4,7 +4,6 @@ from aiogram.utils import executor
 import re
 import os
 
-from sqlalchemy.sql.functions import user
 from crud import *
 
 
@@ -28,8 +27,10 @@ async def send_welcome(msg: types.Message):
         await msg.answer("Не забудь про должок Лёхе;)")
 
 
+
 @dp.message_handler(commands=['help'])
-async def send_welcome(msg: types.Message):
+async def send_docs(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     await msg.answer(
 """
 *\<@Ник\> приторчал\(а\) мне \<Сума\>* \- _добавить долг вам_
@@ -52,6 +53,7 @@ async def send_welcome(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(reg_exp_duty_to_me, msg.text))
 async def add_duty_to_me(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     m = re.match(reg_exp_duty_to_me, msg.text)
     debtor = m.group(1)
     amount = m.group(3)
@@ -67,6 +69,7 @@ async def add_duty_to_me(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(reg_exp_my_duty, msg.text))
 async def add_my_duty(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     m = re.match(reg_exp_my_duty, msg.text)
     lender = m.group(2)
     amount = m.group(3)
@@ -79,6 +82,7 @@ async def add_my_duty(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(reg_exp_payday, msg.text))
 async def get_payment(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     m = re.match(reg_exp_payday, msg.text)
     debtor = m.group(1)
     amount = m.group(3)
@@ -87,6 +91,7 @@ async def get_payment(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(r'Кому я задолжал(а)?[\?]', msg.text))
 async def check_my_duties(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     m = re.match(r'Кому я задолжал((а)?)[\?]', msg.text)
     duties = get_my_duties(str("@"+msg.from_user.username))
     if not duties:
@@ -98,6 +103,7 @@ async def check_my_duties(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(r'Сколько я задолжал(а)?[\?]', msg.text))
 async def count_my_duties(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     total_duty = count_my_total_duty(str("@"+msg.from_user.username))
     if total_duty:
         await msg.answer(f'Ты торчишь {total_duty}')
@@ -107,6 +113,7 @@ async def count_my_duties(msg: types.Message):
 
 @dp.message_handler(lambda msg: msg.text == 'Кто мне должен?')
 async def check_duties_to_me(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     duties = get_duties_for_me(str("@"+msg.from_user.username))
     if not duties:
         await msg.answer("Пока должников нету.")
@@ -117,6 +124,7 @@ async def check_duties_to_me(msg: types.Message):
 
 @dp.message_handler(lambda msg: msg.text == 'Сколько мне должны?')
 async def count_duties_to_me(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     total_duty = count_total_duty_to_me(str("@"+msg.from_user.username))
     if total_duty:
         await msg.answer(f'Тебе торчат {total_duty}')
@@ -126,6 +134,7 @@ async def count_duties_to_me(msg: types.Message):
 
 @dp.message_handler(lambda msg: re.fullmatch(reg_exp_wipe_duty, msg.text))
 async def wipe_away_a_dept(msg: types.Message):
+    sign_up_user(str("@"+msg.from_user.username), msg.from_user.id, msg.chat.id)
     m = re.match(reg_exp_wipe_duty, msg.text)
     debtor = m.group(1)
     if await wipe_away_the_dept(str("@"+msg.from_user.username), debtor, bot):

@@ -148,4 +148,5 @@ if __name__ == '__main__':
    if not os.path.exists('database.sqlite3'):
        print("Creating db...")
        tables.Base.metadata.create_all(engine)
+       print("Db has been created.")
    executor.start_polling(dp)
